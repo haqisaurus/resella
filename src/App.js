@@ -21,6 +21,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     />
   )
 }
+
 const PrivateRouteStore = ({ component: Component, ...rest }) => {
   const token = localStorage.getItem('cred')
   return (
