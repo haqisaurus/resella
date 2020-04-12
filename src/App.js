@@ -1,26 +1,66 @@
 import React from 'react';
-import logo from './logo.svg';
+import { connect } from 'react-redux';
+import { Route, BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import ListStore from './pages/store/ListStore';
+import AddStore from './pages/store/AddStore';
+import Page404 from './pages/errors/Error404';
 import './App.css';
 
-function App() {
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  const token = localStorage.getItem('cred')
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Route
+      {...rest}
+      render={(props) => (
+        token !== null || true ?
+          <Component {...props} /> :
+          <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+      )}
+    />
+  )
+}
+const PrivateRouteStore = ({ component: Component, ...rest }) => {
+  const token = localStorage.getItem('cred')
+  return (
+    <Route
+      {...rest}
+      render={(props) => (
+        token !== null || true ?
+          <Component {...props} /> :
+          <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+      )}
+    />
+  )
 }
 
-export default App;
+class App extends React.Component {
+
+  render() {
+    return (
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Login} />
+          <PrivateRouteStore path="/app" component={Dashboard} />
+          <PrivateRoute path="/my-store" component={ListStore} />
+          <PrivateRoute path="/new-store" component={AddStore} />
+          <Route component={Page404} />
+        </Switch>
+      </Router>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(App);

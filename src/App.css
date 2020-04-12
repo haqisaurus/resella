@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 .App {
   text-align: center;
 }
@@ -13,6 +15,41 @@
   }
 }
 
+.sidebar::-webkit-scrollbar {
+  width: 0px;
+}
+ 
+.sidebar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+ 
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+.sidebar:hover::-webkit-scrollbar{
+  width: 5px;
+}
+
+body::-webkit-scrollbar {
+  width: 0px;
+}
+ 
+body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+ 
+body::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+body:hover::-webkit-scrollbar{
+  width: 5px;
+}
+body, .sidebar {
+  margin-right: 5px;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -26,6 +63,39 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.link-white {
+  color: white;
+}
+.link-white:hover {
+  color: whitesmoke;
+}
+.header-horizontal {
+  background-color: #030852;
+  float: right;
+  height: 65px;
+  margin-right: 20px;
+}
+.header-horizontal .ant-menu-item, 
+.header-horizontal .ant-menu-submenu, 
+.header-horizontal .ant-menu-item:hover {
+  border-bottom: 0px transparent !important;
+  color: white;
+}
+.dashHeader {
+  background-color: #030852;
+  padding: 0;
+}
+.sidebar.ant-layout-sider {
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+}
+.ant-menu-dark.ant-menu-submenu .ant-menu-item a,
+.ant-menu-dark.ant-menu-submenu .ant-menu-item a:hover {
+  color: #030852;
 }
 
 @keyframes App-logo-spin {
