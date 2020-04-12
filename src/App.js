@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Route, BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
+import { Route, HashRouter as Router, Redirect, Switch } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ListStore from './pages/store/ListStore';
