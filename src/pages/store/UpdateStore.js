@@ -1,90 +1,48 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Layout, Menu, Row, Col, Form, Button, Checkbox, Input, Upload, message, Select, Modal, InputNumber } from 'antd'
+import { Layout, Menu, Row, Col, Form, Button, Checkbox, Input, Upload, message, Select } from 'antd'
 import { ArrowLeftOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { appConfig } from '../../configs/configs';
-import { getProvice, getCities, getSubdistrict } from './../../service/DeliveryService';
-import { postNewStore } from './../../service/StoreService';
-export class AddStore extends Component {
+
+class UpdateStore extends Component {
     state = {
+        imageUrl: '',
         loading: false,
-        provinces: [],
-        cities: [],
-        subdistricts: [],
-        formHelper: {
-            logo: '',
-            province: '',
-            city: '',
-            subdistrict: '',
-        }
     }
     layout = {
-        labelCol: { span: 5 },
-        wrapperCol: { span: 16 },
+        labelCol: { span: 4 },
+        wrapperCol: { span: 19 },
     };
     tailLayout = {
-        wrapperCol: { offset: 5, span: 16 },
+        wrapperCol: { offset: 4, span: 16 },
     };
+    countryOptions = [
+        { key: 'af', value: 'af', flag: 'af', text: 'Afghanistan' },
+        { key: 'ax', value: 'ax', flag: 'ax', text: 'Aland Islands' },
+        { key: 'al', value: 'al', flag: 'al', text: 'Albania' },
+        { key: 'dz', value: 'dz', flag: 'dz', text: 'Algeria' },
+        { key: 'as', value: 'as', flag: 'as', text: 'American Samoa' },
+        { key: 'ad', value: 'ad', flag: 'ad', text: 'Andorra' },
+        { key: 'ao', value: 'ao', flag: 'ao', text: 'Angola' },
+        { key: 'ai', value: 'ai', flag: 'ai', text: 'Anguilla' },
+        { key: 'ag', value: 'ag', flag: 'ag', text: 'Antigua' },
+        { key: 'ar', value: 'ar', flag: 'ar', text: 'Argentina' },
+        { key: 'am', value: 'am', flag: 'am', text: 'Armenia' },
+        { key: 'aw', value: 'aw', flag: 'aw', text: 'Aruba' },
+        { key: 'au', value: 'au', flag: 'au', text: 'Australia' },
+        { key: 'at', value: 'at', flag: 'at', text: 'Austria' },
+        { key: 'az', value: 'az', flag: 'az', text: 'Azerbaijan' },
+        { key: 'bs', value: 'bs', flag: 'bs', text: 'Bahamas' },
+        { key: 'bh', value: 'bh', flag: 'bh', text: 'Bahrain' },
+        { key: 'bd', value: 'bd', flag: 'bd', text: 'Bangladesh' },
+        { key: 'bb', value: 'bb', flag: 'bb', text: 'Barbados' },
+        { key: 'by', value: 'by', flag: 'by', text: 'Belarus' },
+        { key: 'be', value: 'be', flag: 'be', text: 'Belgium' },
+        { key: 'bz', value: 'bz', flag: 'bz', text: 'Belize' },
+        { key: 'bj', value: 'bj', flag: 'bj', text: 'Benin' },
+    ]
+    _onSubmit = () => {
 
-    async componentDidMount() {
-        try {
-            const provinces = await getProvice();
-            console.log(provinces)
-            this.setState({
-                provinces: provinces.data.rajaongkir.results
-            });
-        } catch (error) {
-            Modal.error({
-                title: 'Error!',
-                content: error.message,
-            });
-        }
-    }
-
-    _onSubmit = async (values) => {
-        console.log(values)
-        const newStore = {
-            name: values.name,
-            desc: values.desc,
-            phone: values.phone,
-            logo: values.logo,
-            deliverySupport: values.deliverySupport ? true : false,
-            addresses: [{
-                name: 'alamat utama',
-                address: values.address,
-                province: this.state.formHelper.province.province,
-                province_id: this.state.formHelper.province.province_id,
-                city: this.state.formHelper.city.city_name,
-                city_id: this.state.formHelper.city.city_id,
-                subdistrict: this.state.formHelper.subdistrict.subdistrict_name,
-                subdistrict_id: this.state.formHelper.subdistrict.subdistrict_id,
-                postalcode: null,
-                longitude: null,
-                latitude: null
-            }],
-            banks: [{
-                name: values,
-                code: values,
-                type: values,
-                account_number: values,
-                account_name: values
-            }],
-            deliveries: values.deliveries
-        };
-        console.log(newStore)
-        try {
-            const res = await postNewStore(newStore);
-            if (res.res.status !== 200) {
-                Modal.error({
-                    title: 'Error!',
-                    content: res.res.statusText,
-                });
-            }
-            window.location.hash = '/my-store'
-        } catch (error) {
-            console.log(error)
-        }
     }
     _onFailed = () => {
 
@@ -112,7 +70,6 @@ export class AddStore extends Component {
     _dropdownSearch = () => {
 
     }
-
     uploadButton = (
         <div>
             {this.state.loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -123,17 +80,9 @@ export class AddStore extends Component {
     render() {
         return (
             <React.Fragment>
-                <Layout.Header>
-                    <Menu theme="dark" mode="horizontal">
-                        <Menu.Item key="1">
-                            <ArrowLeftOutlined />
-                            <Link to="/my-store">Kembali</Link>
-                        </Menu.Item>
-                    </Menu>
-                </Layout.Header>
                 <Layout.Content>
-                    <Row align="middle" justify="center">
-                        <Col span={16}>
+                    <Row align="middle" justify="left">
+                        <Col span={24}>
                             <Form
                                 {...this.layout}
                                 name="basic"
@@ -142,23 +91,17 @@ export class AddStore extends Component {
                                 onFinishFailed={this._onFailed}
                                 style={{ marginTop: 30 }}
                             >
-                                <Form.Item {...{ wrapperCol: { offset: 10, span: 5 } }}>
+                                <Form.Item {...{ wrapperCol: { offset: 4, span: 5 } }}>
                                     <Upload
-                                        name="image"
+                                        name="avatar"
                                         listType="picture-card"
                                         className="avatar-uploader"
                                         showUploadList={false}
-                                        action={appConfig.imageBBUrl + '?key=' + appConfig.imageBBKey}
+                                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                                         beforeUpload={this._beforeUpload}
-                                        onChange={({ file }) => {
-                                            if (file.status === 'done') {
-                                                const formHelper = { ...this.state.formHelper };
-                                                formHelper.logo = file.response.data.url;
-                                                this.setState({ formHelper })
-                                            }
-                                        }}
+                                        onChange={this.handleChange}
                                     >
-                                        {this.state.formHelper.logo ? <img src={this.state.formHelper.logo} alt="avatar" style={{ width: '100%' }} /> : this.uploadButton}
+                                        {this.state.imageUrl ? <img src={this.state.imageUrl} alt="avatar" style={{ width: '100%' }} /> : this.uploadButton}
                                     </Upload>
                                 </Form.Item>
                                 <Form.Item
@@ -182,12 +125,12 @@ export class AddStore extends Component {
                                     name="phone"
                                     rules={[{ required: true, message: 'Masukan nomer telphone!' }]}
                                 >
-                                    <InputNumber maxLength={15} max={15}/>
+                                    <Input />
                                 </Form.Item>
 
                                 <Form.Item
                                     label="Alamat"
-                                    name="address"
+                                    name="addresss"
                                     rules={[{ required: true, message: 'Masukan alamat toko!' }]}
                                 >
                                     <Input.TextArea />
@@ -195,7 +138,7 @@ export class AddStore extends Component {
 
                                 <Form.Item
                                     label="Propinsi"
-                                    name="province"
+                                    name="city"
                                     rules={[{ required: true, message: 'Masukan propinsi!' }]}
                                 >
                                     <Select
@@ -203,23 +146,7 @@ export class AddStore extends Component {
                                         style={{ minWidth: 400 }}
                                         placeholder="Pilih propinsi"
                                         optionFilterProp="children"
-                                        onChange={async (selectedId) => {
-                                            const selectedObject = this.state.provinces.find(item => item.province_id === selectedId);
-                                            const formHelper = { ...this.state.formHelper };
-                                            formHelper.province = selectedObject;
-                                            this.setState({ formHelper });
-                                            try {
-                                                const cities = await getCities(selectedId);
-                                                this.setState({
-                                                    cities: cities.data.rajaongkir.results
-                                                });
-                                            } catch (error) {
-                                                Modal.error({
-                                                    title: 'Error!',
-                                                    content: error.message,
-                                                });
-                                            }
-                                        }}
+                                        onChange={this._dropdownChange}
                                         onFocus={this._dropdownFocus}
                                         onBlur={this._dropdownBlur}
                                         onSearch={this._dropdownSearch}
@@ -227,7 +154,9 @@ export class AddStore extends Component {
                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                         }
                                     >
-                                        {this.state.provinces.map(item => (<Select.Option value={item.province_id}>{item.province}</Select.Option>))}
+                                        <Select.Option value="jack">Jack</Select.Option>
+                                        <Select.Option value="lucy">Lucy</Select.Option>
+                                        <Select.Option value="tom">Tom</Select.Option>
                                     </Select>
                                 </Form.Item>
 
@@ -237,28 +166,11 @@ export class AddStore extends Component {
                                     rules={[{ required: true, message: 'Masukan Kota/Kabupaten!' }]}
                                 >
                                     <Select
-                                        disabled={this.state.formHelper.province === ''}
                                         showSearch
                                         style={{ minWidth: 400 }}
                                         placeholder="Pilih Kota/kabupaten"
                                         optionFilterProp="children"
-                                        onChange={async (selectedId) => {
-                                            const selectedObject = this.state.cities.find(item => item.city_id === selectedId);
-                                            const formHelper = { ...this.state.formHelper };
-                                            formHelper.city = selectedObject;
-                                            this.setState({ formHelper });
-                                            try {
-                                                const subdistricts = await getSubdistrict(selectedId);
-                                                this.setState({
-                                                    subdistricts: subdistricts.data.rajaongkir.results
-                                                });
-                                            } catch (error) {
-                                                Modal.error({
-                                                    title: 'Error!',
-                                                    content: error.message,
-                                                });
-                                            }
-                                        }}
+                                        onChange={this._dropdownChange}
                                         onFocus={this._dropdownFocus}
                                         onBlur={this._dropdownBlur}
                                         onSearch={this._dropdownSearch}
@@ -266,8 +178,9 @@ export class AddStore extends Component {
                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                         }
                                     >
-                                        {this.state.cities.map(item => (<Select.Option value={item.city_id}>{item.city_name}</Select.Option>))}
-
+                                        <Select.Option value="jack">Jack</Select.Option>
+                                        <Select.Option value="lucy">Lucy</Select.Option>
+                                        <Select.Option value="tom">Tom</Select.Option>
                                     </Select>
                                 </Form.Item>
 
@@ -277,17 +190,11 @@ export class AddStore extends Component {
                                     rules={[{ required: true, message: 'Masukan Kecamatan!' }]}
                                 >
                                     <Select
-                                        disabled={this.state.formHelper.city === ''}
                                         showSearch
                                         style={{ minWidth: 400 }}
                                         placeholder="Pilih Kecamatan"
                                         optionFilterProp="children"
-                                        onChange={async (selectedId) => {
-                                            const selectedObject = this.state.subdistricts.find(item => item.subdistrict_id === selectedId);
-                                            const formHelper = { ...this.state.formHelper };
-                                            formHelper.subdistrict = selectedObject;
-                                            this.setState({ formHelper });
-                                        }}
+                                        onChange={this._dropdownChange}
                                         onFocus={this._dropdownFocus}
                                         onBlur={this._dropdownBlur}
                                         onSearch={this._dropdownSearch}
@@ -295,36 +202,38 @@ export class AddStore extends Component {
                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                         }
                                     >
-                                        {this.state.subdistricts.map(item => (<Select.Option value={item.subdistrict_id}>{item.subdistrict_name}</Select.Option>))}
+                                        <Select.Option value="jack">Jack</Select.Option>
+                                        <Select.Option value="lucy">Lucy</Select.Option>
+                                        <Select.Option value="tom">Tom</Select.Option>
                                     </Select>
                                 </Form.Item>
 
 
-                                <Form.Item {...this.tailLayout} name="deliverySupport" valuePropName="checked">
+                                <Form.Item {...this.tailLayout} name="shipping" valuePropName="checked">
                                     <Checkbox>Aktifkan Pengiriman</Checkbox>
                                 </Form.Item>
 
-                                <Form.Item name="deliveries" label="pilihan pengiriman">
+                                <Form.Item label="pilihan pengiriman">
 
                                     <Checkbox.Group style={{ width: '100%' }}>
                                         <Row>
                                             <Col span={5}>
-                                                <Checkbox value="JNE" style={{ lineHeight: '32px' }}>
+                                                <Checkbox value="A" style={{ lineHeight: '32px' }}>
                                                     JNE
                                                 </Checkbox>
                                             </Col>
                                             <Col span={5}>
-                                                <Checkbox value="TIKI" style={{ lineHeight: '32px' }}>
+                                                <Checkbox value="B" style={{ lineHeight: '32px' }}>
                                                     TIKI
                                                 </Checkbox>
                                             </Col>
                                             <Col span={5}>
-                                                <Checkbox value="J&T" style={{ lineHeight: '32px' }}>
+                                                <Checkbox value="C" style={{ lineHeight: '32px' }}>
                                                     JNT
                                                 </Checkbox>
                                             </Col>
                                             <Col span={5}>
-                                                <Checkbox value="POS" style={{ lineHeight: '32px' }}>
+                                                <Checkbox value="D" style={{ lineHeight: '32px' }}>
                                                     POS
                                                 </Checkbox>
                                             </Col>
@@ -354,4 +263,4 @@ const mapDispatchToProps = {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddStore)
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateStore)

@@ -1,24 +1,63 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Layout, Row, Col, Divider, Card } from 'antd';
+import { Layout, Row, Col, Divider, Card, Modal } from 'antd';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import { appConfig } from './../configs/configs';
 import logo from './../assets/images/logo.png';
+import { postLogin } from './../service/LoginService';
+
 export class Login extends Component {
+
     _facebookLogin = (res) => {
-        console.log(res)
+        const payload = {
+            email: res.email,
+            name: res.name,
+            userId: res.id,
+            authenticator: 'facebook',
+            token: res.accessToken,
+            refresh: res.signedRequest,
+            expiredAt: res.data_access_expiration_time,
+            photo: res.picture.data.url
+        }
+        this._submit(payload);
     }
     _googleLogin = (res) => {
-        console.log(res)
+        const payload = {
+            email: res.profileObj.email,
+            name: res.profileObj.name,
+            userId: res.googleId,
+            authenticator: 'google',
+            token: res.tokenId,
+            refresh: res.tokenObj.login_hint,
+            expiredAt: res.tokenObj.expires_at,
+            photo: res.profileObj.imageUrl
+        }
+        this._submit(payload);
     }
 
     _errorLogin = (err) => {
-
+        Modal.error({
+            title: 'Error Login',
+            content: err.message,
+        });
     }
 
-    _submit = () => {
-
+    _submit = async (payload) => {
+        try {
+            const res = await postLogin(payload);
+            this.props.setToken({
+                token: res.data.token,
+                expiredAt: res.data.expiredAt
+            });
+            window.location.hash = '/my-store';
+        } catch (error) {
+            console.log(error); 
+            Modal.error({
+                title: 'Error Login',
+                content: error.message,
+            });
+        }
     }
     render() {
         return (
@@ -28,9 +67,9 @@ export class Login extends Component {
                         <Row align="middle" justify="center" style={{ height: '100vh' }}>
                             <Col>
                                 <Card style={{ width: 300, textAlign: 'center' }}>
-                                    <img src={logo} style={{width: 90}} alt="Logo Resella"/>
+                                    <img src={logo} style={{ width: 90 }} alt="Logo Resella" />
                                     <h3>Silahkan Login Menggunakan</h3>
-                                    <br/>
+                                    <br />
                                     <FacebookLogin
                                         appId={appConfig.facebookClientId}
                                         fields="name,email,picture"
@@ -57,8 +96,11 @@ const mapStateToProps = (state) => ({
 
 })
 
-const mapDispatchToProps = {
-
-}
+const mapDispatchToProps = dispatch => ({
+    setToken: payload => dispatch({
+        type: 'SET_TOKEN',
+        payload,
+    })
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

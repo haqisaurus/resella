@@ -6,6 +6,6 @@ export const getCategory = (params) => {
 
     }).then(async res => {
         const data = await res.json();
-        return { res, data }
+        return { header: res, data };
     });
 }

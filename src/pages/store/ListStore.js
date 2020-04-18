@@ -3,55 +3,37 @@ import { connect } from 'react-redux'
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Layout, Row, Col, List, Avatar, Button, Skeleton, Menu, Card } from 'antd';
 import { Link } from 'react-router-dom';
+import { getMyStore } from './../../service/StoreService'
+import { postLoginStore } from './../../service/LoginService'
 
 export class ListStore extends Component {
     state = {
-        list: [
-            {
-                logo: "https://4.bp.blogspot.com/-9xQ3IsOCrjs/V2JvW5gYKlI/AAAAAAAAHEQ/3DZqjRgcunEMKgZsivQoO8xYp0wYGU2EgCK4B/s1600/prin2B4.png",
-                "gender": "female",
-                "name": {
-                    "title": "Miss",
-                    "first": "Pascale",
-                    "last": "Wolff"
-                },
-                "email": "pascale.wolff@example.com",
-                "nat": "DE"
-            },
-            {
-                logo: "https://4.bp.blogspot.com/-9xQ3IsOCrjs/V2JvW5gYKlI/AAAAAAAAHEQ/3DZqjRgcunEMKgZsivQoO8xYp0wYGU2EgCK4B/s1600/prin2B4.png",
-                "gender": "male",
-                "name": {
-                    "title": "Mr",
-                    "first": "Anthony",
-                    "last": "Park"
-                },
-                "email": "anthony.park@example.com",
-                "nat": "CA"
-            },
-            {
-                logo: "https://4.bp.blogspot.com/-9xQ3IsOCrjs/V2JvW5gYKlI/AAAAAAAAHEQ/3DZqjRgcunEMKgZsivQoO8xYp0wYGU2EgCK4B/s1600/prin2B4.png",
-                "gender": "male",
-                "name": {
-                    "title": "Mr",
-                    "first": "Silas",
-                    "last": "Madsen"
-                },
-                "email": "silas.madsen@example.com",
-                "nat": "DK"
-            },
-            {
-                logo: "https://4.bp.blogspot.com/-9xQ3IsOCrjs/V2JvW5gYKlI/AAAAAAAAHEQ/3DZqjRgcunEMKgZsivQoO8xYp0wYGU2EgCK4B/s1600/prin2B4.png",
-                "gender": "female",
-                "name": {
-                    "title": "Mrs",
-                    "first": "درسا",
-                    "last": "موسوی"
-                },
-                "email": "drs.mwswy@example.com",
-                "nat": "IR"
-            }
-        ]
+        listStore: []
+    }
+
+    async componentDidMount() {
+        
+        window.token = this.props.token;
+        try {
+            const res = await getMyStore();
+            this.setState({listStore: res.data});
+        } catch (error) {
+            
+        }
+    }
+
+    _loginStore = async (item) => {
+        try {
+            const res = await postLoginStore({storeId: item.id});
+            console.log(res)
+            this.props.setTokenStore({
+                token: res.data.token,
+                expiredAt: res.data.expiredAt
+            });
+            window.location.hash = '/app';
+        } catch (error) {
+            
+        }
     }
 
     render() {
@@ -66,32 +48,27 @@ export class ListStore extends Component {
                             </Menu.Item>
                         </Menu>
                     </Layout.Header>
-                    <Layout.Content style={{ height: 'calc(100vh - 64px)' }}>
-                        <Row>
-                            <Col>
-                            </Col>
-                        </Row>
+                    <Layout.Content style={{ minHeight: 'calc(100vh - 64px)', padding: 25 }}>
                         <Row justify="center" align="middle" style={{ height: '100%' }}>
                             <Col>
-                                <Button type="primary" href="/new-store" style={{ marginBottom: '20px' }}>Buat Toko</Button>
+                                <Button type="primary" href="#/new-store" style={{ marginBottom: '20px' }}>Buat Toko</Button>
                                 <Card>
-
                                     <List
                                         className="demo-loadmore-list"
                                         loading={false}
                                         itemLayout="horizontal"
-                                        dataSource={this.state.list}
+                                        dataSource={this.state.listStore}
                                         renderItem={item => (
                                             <List.Item
-                                                actions={[<Link to={'/'} ><Button type="primary">Masuk</Button></Link>]}
+                                                actions={[<Button type="primary" onClick={() => this._loginStore(item)}>Masuk</Button>]}
                                             >
                                                 <Skeleton avatar title={false} loading={false} active>
                                                     <List.Item.Meta
                                                         avatar={
                                                             <Avatar src={item.logo} />
                                                         }
-                                                        title={<a href="https://ant.design">{item.email}</a>}
-                                                        description="login 6 minutes ago"
+                                                        title={<div onClick={() => this._loginStore(item)}>{item.name}</div>}
+                                                        description={item.desc}
                                                     />
                                                 </Skeleton>
                                             </List.Item>
@@ -109,11 +86,14 @@ export class ListStore extends Component {
 }
 
 const mapStateToProps = (state) => ({
-
+    token: state.account.token
 })
 
-const mapDispatchToProps = {
-
-}
+const mapDispatchToProps = dispatch => ({
+    setTokenStore: payload => dispatch({
+        type: 'SET_TOKEN_STORE',
+        payload,
+    })
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListStore)

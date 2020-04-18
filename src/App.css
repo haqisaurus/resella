@@ -32,7 +32,7 @@
 }
 
 body::-webkit-scrollbar {
-  width: 0px;
+  width: 5px;
 }
  
 body::-webkit-scrollbar-track {
@@ -66,16 +66,23 @@ body, .sidebar {
 }
 
 .link-white {
-  color: white;
+  color: white !important;
 }
 .link-white:hover {
-  color: whitesmoke;
+  color: whitesmoke !important;
+}
+.header-horizontal.right-menu {
+  float: right;
+  width: 30%;
+  text-align: right;
+}
+.header-horizontal.left-menu {
+  float: left;
+  width: 50%;
 }
 .header-horizontal {
   background-color: #030852;
-  float: right;
   height: 65px;
-  margin-right: 20px;
 }
 .header-horizontal .ant-menu-item, 
 .header-horizontal .ant-menu-submenu, 

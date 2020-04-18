@@ -1,40 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Route, HashRouter as Router, Redirect, Switch } from 'react-router-dom';
+import { Route, HashRouter as Router, Switch } from 'react-router-dom';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import PrivateRoute from './router/PrivateRoute';
+import PrivateRouteStore from './router/PrivateRouteStore';
+import Dashboard from './pages/dashboard/Dashboard';
 import ListStore from './pages/store/ListStore';
 import AddStore from './pages/store/AddStore';
 import Page404 from './pages/errors/Error404';
+
 import './App.css';
-
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  const token = localStorage.getItem('cred')
-  return (
-    <Route
-      {...rest}
-      render={(props) => (
-        token !== null || true ?
-          <Component {...props} /> :
-          <Redirect to={{ pathname: '/', state: { from: props.location } }} />
-      )}
-    />
-  )
-}
-
-const PrivateRouteStore = ({ component: Component, ...rest }) => {
-  const token = localStorage.getItem('cred')
-  return (
-    <Route
-      {...rest}
-      render={(props) => (
-        token !== null || true ?
-          <Component {...props} /> :
-          <Redirect to={{ pathname: '/', state: { from: props.location } }} />
-      )}
-    />
-  )
-}
 
 class App extends React.Component {
 
@@ -53,11 +28,11 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = () => {
   return {};
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = () => {
   return {};
 };
 

@@ -1,5 +1,5 @@
 export const appConfig = {
-    apiUrl: 'https://reqres.in',
+    apiUrl: 'http://localhost:5000',
     googleClientId: '1019516191359-n1kp8l2diarp6292mthbhfih6j1789mq.apps.googleusercontent.com',
     googleSecretId: 'v-D8In-JDvePMnRneNnxCT0v',
     facebookClientId: '1063563020718887',
