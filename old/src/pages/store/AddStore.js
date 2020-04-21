@@ -227,7 +227,7 @@ export class AddStore extends Component {
                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                         }
                                     >
-                                        {this.state.provinces.map(item => (<Select.Option value={item.province_id}>{item.province}</Select.Option>))}
+                                        {this.state.provinces.map((item, index) => (<Select.Option key={`${index}`} value={item.province_id}>{item.province}</Select.Option>))}
                                     </Select>
                                 </Form.Item>
 
@@ -266,7 +266,7 @@ export class AddStore extends Component {
                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                         }
                                     >
-                                        {this.state.cities.map(item => (<Select.Option value={item.city_id}>{item.city_name}</Select.Option>))}
+                                        {this.state.cities.map((item, index) => (<Select.Option key={`${index}`} value={item.city_id}>{item.city_name}</Select.Option>))}
 
                                     </Select>
                                 </Form.Item>
@@ -295,7 +295,7 @@ export class AddStore extends Component {
                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                         }
                                     >
-                                        {this.state.subdistricts.map(item => (<Select.Option value={item.subdistrict_id}>{item.subdistrict_name}</Select.Option>))}
+                                        {this.state.subdistricts.map((item, index) => (<Select.Option key={`${index}`} value={item.subdistrict_id}>{item.subdistrict_name}</Select.Option>))}
                                     </Select>
                                 </Form.Item>
 
@@ -333,7 +333,7 @@ export class AddStore extends Component {
                                 </Form.Item>
 
                                 <Form.Item {...this.tailLayout}>
-                                    <Button type="primary">
+                                    <Button type="primary" htmlType="submit">
                                         Submit
                                     </Button>
                                 </Form.Item>
