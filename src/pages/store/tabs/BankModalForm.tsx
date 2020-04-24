@@ -1,45 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Form, Button, Input, Select, Checkbox } from 'antd'
-import { IBankForm } from '../../../typed/Common';
-import { IResStore } from '../../../typed/Response';
+import { Modal, Form, Button, Input, Select, Checkbox, notification, Spin } from 'antd'
+import { IResStore, IResBankType, IResBank } from '../../../typed/Response';
 import { FormInstance } from 'antd/lib/form';
+import { getBankOptions, updateBank, createBank } from '../../../service/BankService';
 
 interface IProps {
     modalShow: boolean;
     eventModal: () => void;
     currentStore?: IResStore;
-    data: IBankForm;
+    data: IResBank;
     form?: any;
 }
 interface IState {
-    
-    bankData: IBankForm;
+    bankOptions: IResBankType[];
+    bankData: IResBank;
     pageReady: boolean;
+    isSubmitting: boolean;
 }
 class BankModalForm extends Component<IProps, IState> {
     formRef = React.createRef<FormInstance>();
     state = {
+        bankOptions: [],
         pageReady: false,
-        bankData: {
-            new: true,
-            name: '',
-            code: '',
-            type: '',
-            account_number: '',
-            account_name: '',
-            user_id: -1,
-            store_id: -1,
-            is_default: false,
-            updated_at: Date(),
-            created_at: Date(),
-        }
+        isSubmitting: false,
+        bankData: this.props.data,
     }
 
     async componentWillMount () {
         try {
+            const bankOptions = await getBankOptions();
             this.setState({
-                bankData: this.props.data,
+                bankOptions: bankOptions.data,
                 pageReady: true,
             });
         } catch (error) {
@@ -49,8 +41,38 @@ class BankModalForm extends Component<IProps, IState> {
             });
         }
     }
-    _onSubmit = (values: any) => {
-        console.log(values)
+    _onSubmit = async (values: any) => {
+        const data: IResBank = {...this.state.bankData, ...values};
+        console.log(data)
+        this.setState({isSubmitting: true});
+        let result = null;
+        try {
+            if (data.id) {
+                result = await updateBank(data);
+            } else {
+                result = await createBank(data);
+            }
+            if (result.header.ok) {
+                notification.success({
+                    message: `Sukses!`,
+                    description:'Data bank berhasil disubmit.',
+                });
+                this.props.eventModal();
+            } else {
+                    Modal.error({
+                        title: 'Error!',
+                        content: result.header.statusText,
+                    });
+            }
+        } catch (error) {
+            console.log(error); 
+            Modal.error({
+                title: 'Error!',
+                content: error.message,
+            });
+        }
+        this.setState({isSubmitting: false});
+
     }
     _onFailed = () => {
 
@@ -59,7 +81,7 @@ class BankModalForm extends Component<IProps, IState> {
         console.log(this.state.bankData)
         return (
             <Modal
-                title="Form Alamat"
+                title="Form Bank"
                 visible={this.props.modalShow}
                 onCancel={() => this.props.eventModal()}
                 footer={[]}
@@ -78,7 +100,6 @@ class BankModalForm extends Component<IProps, IState> {
                     }}
                     onFinish={this._onSubmit}
                     onFinishFailed={this._onFailed}
-                    style={{ marginTop: 30 }}
                     ref={this.formRef} 
                     layout="vertical"
                 >
@@ -90,11 +111,26 @@ class BankModalForm extends Component<IProps, IState> {
                         <Input />
                     </Form.Item>
                     <Form.Item
+                        label="Jenis Bank"
+                        name="type"
+                        rules={[{ required: true, message: 'Masukan jenis bank!' }]}
+                    >
+                        <Select
+                            showSearch
+                            placeholder="Pilih jenis bank"
+                            filterOption={(input: string, option: any) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
+                            {this.state.bankOptions.map((item: IResBankType, index: number) => (<Select.Option key={`${index}`} value={item.value} > {item.value} </Select.Option>))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
                         label="Code"
                         name="code"
                         rules={[{ required: true, message: 'Masukan kode bank!' }]}
                     >
-                        <Input/>
+                        <Input max={6} maxLength={6}/>
                     </Form.Item>
                     <Form.Item
                         label="Nama Pemilik Rekening"
@@ -115,23 +151,7 @@ class BankModalForm extends Component<IProps, IState> {
                     >
                         <Checkbox>Jadikan utama</Checkbox>
                     </Form.Item>
-                    <Form.Item
-                        label="Propinsi"
-                        name="province"
-                        rules={[{ required: true, message: 'Masukan propinsi!' }]}
-                    >
-                        <Select
-                            showSearch
-                            placeholder="Pilih propinsi"
-                            onChange={async () => {
-                            }}
-
-                            filterOption={(input: string, option: any) =>
-                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                            }
-                        >
-                        </Select>
-                    </Form.Item>
+                    
                     <Form.Item>
                         <Button type="dashed" onClick={() => this.props.eventModal()} style={{marginRight: 15}}>
                             Batal
@@ -140,7 +160,7 @@ class BankModalForm extends Component<IProps, IState> {
                             Simpan
                         </Button>
                     </Form.Item>
-                </Form> : 'Loading...'}
+                </Form> : <Spin tip="Loading..." style={{width: '100%'}}></Spin>}
             </Modal>
         )
     }

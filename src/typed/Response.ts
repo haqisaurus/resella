@@ -22,6 +22,7 @@ export interface IResAddress {
     user_id: number;
 }
 export interface IResBank {
+    id?:number;
     name: string;
     code: string;
     type: string;
@@ -43,7 +44,7 @@ export interface IResDelivery {
 export interface IResStore {
     addresses?: IResAddress[];
     banks?: IResBank[];
-    couriers?: IResDelivery[];
+    deli_services?: IResDelivery[];
     created_at: Date;
     deleted_at: Date;
     delivery_support: boolean;
@@ -56,4 +57,8 @@ export interface IResStore {
     status: string;
     updated_at: Date;
     user_id: number;
+}
+export interface IResBankType {
+    typname: string;
+    value: string;
 }

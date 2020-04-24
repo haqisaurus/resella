@@ -30,3 +30,16 @@ export interface IReqAddress {
     user_id?: number;
     store_id?: number;
 }
+export interface IReqBank {
+    id?:number;
+    name: string;
+    code: string;
+    type: string;
+    account_number: string;
+    account_name: string;
+    user_id: number;
+    store_id: number;
+    is_default: boolean;
+    updated_at: Date;
+    created_at: Date;
+}

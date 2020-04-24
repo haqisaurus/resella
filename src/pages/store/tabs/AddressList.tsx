@@ -5,9 +5,7 @@ import { IResAddress, IResStore } from '../../../typed/Response';
 import AddressModalForm from './AddressModalForm';
 import { getAddress, deleteAddress } from '../../../service/AddressService';
 import { IResponse } from '../../../typed/Common';
-import {
-    ExclamationCircleOutlined,
-} from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 interface IProps {
     currentStore: IResStore
 }
@@ -66,7 +64,7 @@ class StoreList extends Component<IProps, IState> {
                 width: 200,
                 render: (text: string, record: IResAddress) => (
                     <React.Fragment>
-                        <Button size="small" type="link" onClick={() => this._editData(record)}>Edit</Button>
+                        <Button size="small" type="dashed" onClick={() => this._editData(record)}>Edit</Button>&nbsp;
                         <Button size="small" type="danger" onClick={() => this._delete(record)}>Hapus</Button>
                     </React.Fragment>
                 ),

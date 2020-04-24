@@ -125,7 +125,6 @@ class AddressModalForm extends Component<IProps, IState> {
                     }}
                     onFinish={this._onSubmit}
                     onFinishFailed={this._onFailed}
-                    style={{ marginTop: 30 }}
                     ref={this.formRef} 
                 >
                     <Form.Item

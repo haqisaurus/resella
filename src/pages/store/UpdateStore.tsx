@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Layout, Tabs, Row, Col, message } from 'antd'
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Layout, Tabs, Row, Col } from 'antd'
 import StoreForm from './tabs/StoreForm';
 import AddressList from './tabs/AddressList';
-import { IResStore } from '../../typed/Response';
 import BankList from './tabs/BankList';
+import ShippingForm from './tabs/ShippingForm';
 interface IProps {
 }
 interface IState {
@@ -24,7 +23,7 @@ class UpdateStore extends Component<IProps, IState> {
                 <Layout.Content>
                     <Row align="middle" justify="start">
                         <Col span={24}>
-                        <Tabs defaultActiveKey="set-2" tabPosition="top">
+                        <Tabs defaultActiveKey="set-3" tabPosition="top">
                             <Tabs.TabPane tab="Info Toko" key="set-1">
                                 <StoreForm/>
                             </Tabs.TabPane>
@@ -35,7 +34,7 @@ class UpdateStore extends Component<IProps, IState> {
                                 <BankList/>
                             </Tabs.TabPane>
                             <Tabs.TabPane tab="Pengiriman" key="set-4">
-                                test 2
+                                <ShippingForm/>
                             </Tabs.TabPane>
                         </Tabs>
                         </Col>

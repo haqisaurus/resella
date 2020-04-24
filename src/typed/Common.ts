@@ -60,17 +60,7 @@ export interface IStore {
     updated_at: Date;
     user_id: number;
 }
-export interface IBankForm {
-    new: boolean;
-    name: string;
-    code: string;
-    type: string;
-    account_number: string;
-    account_name: string;
-    user_id: number;
-    store_id: number;
-    is_default: boolean;
-}
+
 export interface IProvince {
     province: string;
     province_id: number;
