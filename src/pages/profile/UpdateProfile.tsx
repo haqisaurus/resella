@@ -6,6 +6,7 @@ import { updateProfile } from '../../service/AccountService';
 import { IUser } from '../../typed/Response';
 interface IProps {
     profile: IUser;
+    setBreadcrum: (x: any) => void;
 }
 interface IState {
     imageUrl: string;
@@ -23,6 +24,13 @@ class UpdateProfile extends Component<IProps, IState> {
     tailLayout = {
         wrapperCol: { offset: 4, span: 16 },
     };
+
+    componentDidMount() {
+        this.props.setBreadcrum([
+            { link: 'app', label: 'Dashboard' },
+            { link: 'app/profile', label: 'Edit Profil' },
+        ]);
+    }
 
     _onSubmit = async (values: any) => {
         try {
@@ -111,7 +119,8 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: (x: any) => void) => ({
-    setProfile: (payload: any) => dispatch({ type: 'SET_PROFILE', payload })
+    setProfile: (payload: any) => dispatch({ type: 'SET_PROFILE', payload }),
+    setBreadcrum: (payload: any) => dispatch({ type: 'SET_BREADCRUM', payload })
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdateProfile)

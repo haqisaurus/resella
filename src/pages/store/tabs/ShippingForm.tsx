@@ -36,6 +36,7 @@ class ShippingForm extends Component<IProps, IState> {
         });
     }
     _onSubmit = async (values: any) => {
+        values.deli_services = values.deli_services.map((item: any) => ({id: item}))
         const data = {...this.props.currentStore, ...values}
         console.log(data)
         // values.id = this.props.currentStore.id;

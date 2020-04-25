@@ -23,9 +23,9 @@ class StoreForm extends Component<IProps, IState> {
     };
     
     _onSubmit = async (values: any) => {
-        values.id = this.props.currentStore.id;
+        const data = {...this.props.currentStore, ...values};
         try {
-            const result = await updateStore(values);
+            const result = await updateStore(data);
             if (!result.header.ok) {
                 Modal.error({
                     title: 'Error!',

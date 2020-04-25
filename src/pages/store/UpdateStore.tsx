@@ -20,6 +20,10 @@ class UpdateStore extends Component<IProps, IState> {
         loading: false,
     }
 
+    componentDidMount() {
+        this._changeTab('info');
+    }
+
     _getUrlParameter = (name: string) => {
         name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
