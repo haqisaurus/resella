@@ -156,7 +156,7 @@ class BankModalForm extends Component<IProps, IState> {
                         <Button type="dashed" onClick={() => this.props.eventModal()} style={{marginRight: 15}}>
                             Batal
                         </Button>
-                        <Button type="primary" htmlType="submit" >
+                        <Button type="primary" htmlType="submit" loading={this.state.isSubmitting}>
                             Simpan
                         </Button>
                     </Form.Item>

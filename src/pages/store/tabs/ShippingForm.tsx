@@ -57,6 +57,7 @@ class ShippingForm extends Component<IProps, IState> {
             console.log(error);
         }
     }
+   
     _onFailed = () => {
 
     }
@@ -111,7 +112,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: (x: any) => void) => ({
-    setCurrentStore: (payload: any) => dispatch({ type: 'SET_STORE', payload })
+    setCurrentStore: (payload: any) => dispatch({ type: 'SET_STORE', payload }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShippingForm)

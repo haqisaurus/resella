@@ -21,6 +21,7 @@ class StoreForm extends Component<IProps, IState> {
     tailLayout = {
         wrapperCol: { offset: 4, span: 16 },
     };
+    
     _onSubmit = async (values: any) => {
         values.id = this.props.currentStore.id;
         try {
@@ -99,7 +100,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: (x: any) => void) => ({
-    setCurrentStore: (payload: any) => dispatch({type: 'SET_STORE', payload})
+    setCurrentStore: (payload: any) => dispatch({type: 'SET_STORE', payload}),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StoreForm)

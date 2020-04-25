@@ -57,8 +57,27 @@ export interface IResStore {
     status: string;
     updated_at: Date;
     user_id: number;
+    imageBB: string;
+    slug: string;
 }
 export interface IResBankType {
     typname: string;
     value: string;
+}
+
+export interface IUser {
+    activation_code: string;
+    created_at: Date;
+    email: string;
+    facebook: boolean;
+    facebook_id: string;
+    google: boolean;
+    google_id: string;
+    id: number;
+    name: string;
+    password: string;
+    phone: string;
+    photo: string;
+    status: string;
+    updated_at: Date;
 }

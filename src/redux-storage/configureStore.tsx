@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage' // defaults to localStorage for 
 import { combineReducers } from 'redux';
 import { accountReducer } from './accountReducer';
 import { storeReducer } from './storeReducer';
+import { systemReducer } from './systemReducer';
 
 const persistConfig = {
     key: 'root',
@@ -13,7 +14,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     account: accountReducer,
-    store: storeReducer
+    store: storeReducer,
+    system: systemReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -7,7 +7,7 @@ import { getAddress, deleteAddress } from '../../../service/AddressService';
 import { IResponse } from '../../../typed/Common';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 interface IProps {
-    currentStore: IResStore
+    currentStore: IResStore;
 }
 interface IState {
     addresses: IResAddress[];
@@ -116,7 +116,7 @@ class StoreList extends Component<IProps, IState> {
                     if (request.header.ok) {
                         notification.success({
                             message: `Notifikasi!`,
-                            description:'Data berhasil dihapus.',
+                            description: 'Data berhasil dihapus.',
                         });
                         this._getAddress();
                     } else {
@@ -162,10 +162,7 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-    setTokenStore: (payload: any) => dispatch({
-        type: 'SET_TOKEN_STORE',
-        payload,
-    })
+    setTokenStore: (payload: any) => dispatch({ type: 'SET_TOKEN_STORE', payload, }),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StoreList)

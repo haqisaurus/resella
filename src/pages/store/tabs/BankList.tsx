@@ -7,7 +7,7 @@ import BankModalForm from './BankModalForm';
 import { getBank, deleteBank } from '../../../service/BankService';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 interface IProps {
-    currentStore: IResStore
+    currentStore: IResStore;
 }
 interface IState {
     banks: IResBank[];
@@ -23,8 +23,8 @@ const bankData = {
     type: '',
     account_number: '',
     account_name: '',
-    user_id:  0,
-    store_id:  0,
+    user_id: 0,
+    store_id: 0,
     is_default: false,
     updated_at: new Date(),
     created_at: new Date(),
@@ -103,7 +103,7 @@ class BankList extends Component<IProps, IState> {
         }
     }
     _editData = (item: IResBank) => {
-        this.setState({bankData: item}, () => {
+        this.setState({ bankData: item }, () => {
             this._toggleForm();
         });
     }
@@ -118,7 +118,7 @@ class BankList extends Component<IProps, IState> {
                     if (request.header.ok) {
                         notification.success({
                             message: `Notifikasi!`,
-                            description:'Data berhasil dihapus.',
+                            description: 'Data berhasil dihapus.',
                         });
                         this._getbank();
                     } else {
@@ -150,7 +150,7 @@ class BankList extends Component<IProps, IState> {
         return (
             <React.Fragment>
                 <Button type="primary" onClick={this._toggleForm} style={{ marginBottom: 20 }}>Tambah Bank</Button>
-                <Table rowKey="id" columns={this.state.columns} dataSource={this.state.banks} />
+                <Table loading={!this.state.dataLoaded} rowKey="id" columns={this.state.columns} dataSource={this.state.banks} />
                 {this.state.formOpen && <BankModalForm data={this.state.bankData} modalShow={this.state.formOpen} eventModal={this._toggleForm} />}
             </React.Fragment>
         )
@@ -162,10 +162,7 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-    setTokenStore: (payload: any) => dispatch({
-        type: 'SET_TOKEN_STORE',
-        payload,
-    })
+    setTokenStore: (payload: any) => dispatch({ type: 'SET_TOKEN_STORE', payload, }),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BankList)
