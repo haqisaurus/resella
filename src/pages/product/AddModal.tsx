@@ -11,7 +11,7 @@ const layout = {
     wrapperCol: { span: 16 },
 };
 
-function getBase64(file) {
+function getBase64 (file: File) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -19,7 +19,16 @@ function getBase64(file) {
         reader.onerror = error => reject(error);
     });
 }
-export class AddModal extends Component {
+interface IProps {
+    visible: boolean;
+    closeModal: () => void;
+}
+interface IState {
+    previewVisible: boolean,
+    previewImage: string,
+    fileList: any,
+}
+export class AddModal extends Component<IProps, IState> {
     state = {
         previewVisible: false,
         previewImage: '',
@@ -28,7 +37,7 @@ export class AddModal extends Component {
 
     _handleCancel = () => this.setState({ previewVisible: false });
 
-    _handlePreview = async file => {
+    _handlePreview = async (file: any) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
         }
@@ -39,7 +48,9 @@ export class AddModal extends Component {
         });
     };
 
-    _handleChange = ({ fileList }) => this.setState({ fileList });
+    _handleChange = (e: any) => {
+        this.setState({ fileList: e.fileList });
+    };
 
     uploadButton = (
         <div>
@@ -53,13 +64,23 @@ export class AddModal extends Component {
         { value: 'Wall Street' },
     ];
 
-    render() {
+    _handleOk = () => {
+
+    }
+    _onSubmit = () => {
+
+    }
+    _onChangeRadio = () => {
+
+    }
+
+    render () {
         return (
             <React.Fragment>
                 <Modal
                     title="Tambah Produk"
                     visible={this.props.visible}
-                    onOk={this.handleOk}
+                    onOk={this._handleOk}
                     onCancel={() => this.props.closeModal()}
                     width='95vw'
                     style={{ marginTop: -60 }}
@@ -92,7 +113,7 @@ export class AddModal extends Component {
                                     dropdownMatchSelectWidth={500}
                                     style={{ width: '100%' }}
                                     options={this.options}
-                                    filterOption={(inputValue, option) => {
+                                    filterOption={(inputValue: any, option: any) => {
                                         console.log(inputValue, option)
                                         return option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                                     }
@@ -119,7 +140,7 @@ export class AddModal extends Component {
                             <InputNumber
                                 defaultValue={0}
                                 formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                                parser={value => value.replace(/[^0-9]/g, '')}
+                                parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                 style={{ width: '100%' }}
                             />
                         </Form.Item>
@@ -128,7 +149,7 @@ export class AddModal extends Component {
                                 <InputNumber
                                     defaultValue={0}
                                     formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                                    parser={value => value.replace(/[^0-9]/g, '')}
+                                    parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                     style={{ width: '100%' }}
                                 />
                             </Form.Item>
@@ -141,7 +162,7 @@ export class AddModal extends Component {
                                 <InputNumber
                                     defaultValue={0}
                                     formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                                    parser={value => value.replace(/[^0-9]/g, '')}
+                                    parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                     style={{ width: '100%' }}
                                 />
                             </Form.Item>
@@ -153,7 +174,7 @@ export class AddModal extends Component {
                             <TableVarian />
                         </Form.Item>
                         <Form.Item name={['isNew']} label="Kondisi" rules={[{ required: true }]}>
-                            <Radio.Group onChange={this.onChange} value={this.state.value}>
+                            <Radio.Group onChange={this._onChangeRadio} value={1}>
                                 <Radio value={1}>Baru</Radio>
                                 <Radio value={2}>Bekas</Radio>
                             </Radio.Group>
@@ -162,7 +183,7 @@ export class AddModal extends Component {
                             <InputNumber
                                 defaultValue={0}
                                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                                parser={value => parseInt(value.replace(/[^0-9]/g, ''))}
+                                parser={(value: any) => parseInt(value.replace(/[^0-9]/g, ''))}
                                 style={{ width: 100 }}
                             /> pcs
                         </Form.Item>
@@ -170,7 +191,7 @@ export class AddModal extends Component {
                             <InputNumber
                                 defaultValue={0}
                                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                                parser={value => parseInt(value.replace(/[^0-9]/g, ''))}
+                                parser={(value: any) => parseInt(value.replace(/[^0-9]/g, ''))}
                                 style={{ width: 100 }}
                             /> gram
                         </Form.Item>
@@ -188,7 +209,7 @@ export class AddModal extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
 
 })
 

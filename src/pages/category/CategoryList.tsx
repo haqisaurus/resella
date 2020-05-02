@@ -1,44 +1,31 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, notification, Modal, Tag } from 'antd'
-import AddressModalForm from './AddressModalForm';
-import { getAddress, deleteAddress } from '../../../service/AddressService';
-import { IResponse } from '../../../typed/Common';
+import { Table, Button, Modal, notification } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { IStore, IAddress } from '../../../typed/Entity';
+import { IResponse } from '../../typed/Common';
+import { getCategory, deleteCategory, getDetailCategory } from '../../service/CategoryService';
+import CategoryForm from './CategoryForm';
+import { ICategory } from '../../typed/Entity';
 interface IProps {
-    currentStore: IStore;
+    setBreadcrum: (x: any) => void;
 }
 interface IState {
-    addresses: IAddress[];
+    categories: ICategory[];
     formOpen: boolean;
     columns: any[];
-    addressData: IAddress;
+    data: ICategory;
     dataLoaded: boolean;
 }
-const newData: IAddress = {
-    address: '',
-    city: '',
-    city_id: 0,
-    created_at: new Date(),
+const newData = {
     id: 0,
-    is_default: false,
-    latitude: '',
-    longitude: '',
     name: '',
-    postalcode: 0,
-    province: '',
-    province_id: 0,
-    store_id: 0,
-    subdistrict: '',
-    subdistrict_id: 0,
     updated_at: new Date(),
-    user_id: 0,
+    created_at: new Date(),
 }
-class StoreList extends Component<IProps, IState> {
+class CategoryList extends Component<IProps, IState> {
     state = {
-        addressData: newData,
-        addresses: [],
+        data: newData,
+        categories: [],
         formOpen: false,
         dataLoaded: false,
         columns: [
@@ -47,22 +34,12 @@ class StoreList extends Component<IProps, IState> {
                 dataIndex: 'name',
                 key: 'name',
                 width: 250,
-                render: (text: string, record: IAddress) => (
-                    <React.Fragment>
-                        {text} {record.is_default && <Tag color='geekblue'>Default</Tag>}
-                    </React.Fragment>
-                )
-            },
-            {
-                title: 'Alamat',
-                dataIndex: 'address',
-                key: 'address'
             },
             {
                 title: 'Aksi',
                 key: 'address',
                 width: 200,
-                render: (text: string, record: IAddress) => (
+                render: (text: string, record: ICategory) => (
                     <React.Fragment>
                         <Button size="small" type="dashed" onClick={() => this._editData(record)}>Edit</Button>&nbsp;
                         <Button size="small" type="danger" onClick={() => this._delete(record)}>Hapus</Button>
@@ -73,16 +50,19 @@ class StoreList extends Component<IProps, IState> {
 
     }
     async componentDidMount () {
-        await this._getAddress();
+        this.props.setBreadcrum([
+            { link: 'app', label: 'Dashboard' },
+            { link: 'app/product-category', label: 'Daftar Category' },
+        ]);
+        await this._getCategory();
     }
-
-    _getAddress = async () => {
+    _getCategory = async () => {
         this.setState({ dataLoaded: false });
         try {
-            const request: IResponse = await getAddress();
+            const request: IResponse = await getCategory();
             if (request.header.ok) {
                 this.setState({
-                    addresses: request.data,
+                    categories: request.data,
                     dataLoaded: true
                 });
             } else {
@@ -99,26 +79,48 @@ class StoreList extends Component<IProps, IState> {
             });
         }
     }
-    _editData = (item: IAddress) => {
-        const address: IAddress = item;
-        this.setState({ addressData: address }, () => {
-            this._toggleForm();
+    _createData = () => {
+        this.setState({
+            data: newData,
+            formOpen: true,
         });
     }
-    _delete = (item: IAddress) => {
+    _editData = async (item: ICategory) => {
+        try {
+            const request = await getDetailCategory(item.id!);
+            if (request.header.ok) {
+                this.setState({
+                    data: request.data,
+                    formOpen: true
+                });
+            } else {
+                Modal.error({
+                    title: 'Error!',
+                    content: request.header.statusText,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            Modal.error({
+                title: 'Error!',
+                content: error.message,
+            });
+        }
+    }
+    _delete = (item: ICategory) => {
         Modal.confirm({
             title: 'Konfirmasi',
             icon: <ExclamationCircleOutlined />,
-            content: 'Anda yakin ingin mengapus data?',
+            content: 'Anda yakin ingin mengapus data semua produk yang berhubungan dengan category ini akan di jadikan kosong?',
             onOk: async () => {
                 try {
-                    const request: IResponse = await deleteAddress(item);
+                    const request: IResponse = await deleteCategory(item);
                     if (request.header.ok) {
                         notification.success({
                             message: `Notifikasi!`,
                             description: 'Data berhasil dihapus.',
                         });
-                        this._getAddress();
+                        this._getCategory();
                     } else {
                         Modal.error({
                             title: 'Error!',
@@ -138,32 +140,29 @@ class StoreList extends Component<IProps, IState> {
             },
         })
     }
-
     _toggleForm = () => {
-        this.setState({ formOpen: !this.state.formOpen }, () => {
-            if (this.state.formOpen === false) {
-                this._getAddress();
-            }
-        });
+        this.setState({ formOpen: !this.state.formOpen });
+        if (this.state.formOpen === false) {
+            this._getCategory();
+        }
     }
     render () {
         return (
             <React.Fragment>
-                <Button type="primary" onClick={() => this._editData(newData)} style={{ marginBottom: 20 }}>Tambah Alamat</Button>
-                <Table loading={this.state.dataLoaded === false} rowKey="id" columns={this.state.columns} dataSource={this.state.addresses} />
-                {this.state.formOpen && <AddressModalForm data={this.state.addressData} modalShow={this.state.formOpen} eventModal={this._toggleForm} />}
+                <Button type="primary" onClick={this._createData} style={{ marginBottom: 20 }}>Tambah Category</Button>
+                <Table loading={!this.state.dataLoaded} rowKey="id" columns={this.state.columns} dataSource={this.state.categories} />
+                {this.state.formOpen && <CategoryForm visible={this.state.formOpen} data={this.state.data} closeForm={this._toggleForm}/>}
             </React.Fragment>
         )
     }
 }
 
-const mapStateToProps = (state: any) => ({
-    currentStore: state.store.currentStore
+const mapStateToProps = () => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-    setTokenStore: (payload: any) => dispatch({ type: 'SET_TOKEN_STORE', payload, }),
+    setBreadcrum: (payload: any) => dispatch({ type: 'SET_BREADCRUM', payload })
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(StoreList)
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryList)
 

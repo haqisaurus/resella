@@ -3,16 +3,25 @@ import { connect } from 'react-redux';
 import { Table, Tag, Button } from 'antd';
 import AddModal from './AddModal'
 import { Link } from 'react-router-dom';
-export class Product extends Component {
+import { IProduct } from '../../typed/Entity';
+interface IProps { 
+    setBreadcrum: (x: any) => void;
+}
+interface IState {
+    addModalVisible: boolean;
+    data: IProduct[]
+}
+class ProductList extends Component<IProps, IState> {
     state = {
         addModalVisible: false,
+        data: [],
     }
     columns = [
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: text => <Link to={'/'}></Link>,
+            render: (text: string) => <Link to={'/'}></Link>,
         },
         {
             title: 'Age',
@@ -28,9 +37,9 @@ export class Product extends Component {
             title: 'Tags',
             key: 'tags',
             dataIndex: 'tags',
-            render: tags => (
+            render: (tags: any) => (
                 <span>
-                    {tags.map(tag => {
+                    {tags.map((tag: any) => {
                         let color = tag.length > 5 ? 'geekblue' : 'green';
                         if (tag === 'loser') {
                             color = 'volcano';
@@ -47,38 +56,22 @@ export class Product extends Component {
         {
             title: 'Action',
             key: 'action',
-            render: (text, record) => (
+            render: (text: string, record: IProduct) => (
                 <span>
-                    <Link>Invite</Link>
-                    <Link>Delete</Link>
+                    <Button>Invite</Button>
+                    <Button>Delete</Button>
                 </span>
             ),
         },
     ];
 
-    data = [
-        {
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer'],
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-            tags: ['loser'],
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sidney No. 1 Lake Park',
-            tags: ['cool', 'teacher'],
-        },
-    ];
+
+    componentDidMount() {
+        this.props.setBreadcrum([
+            { link: 'app', label: 'Dashboard' },
+            { link: 'app/product', label: 'Daftar Produk' },
+        ]);
+    }
     _toogleAddModal = () => {
         this.setState({
             addModalVisible: !this.state.addModalVisible
@@ -88,19 +81,23 @@ export class Product extends Component {
         return (
             <React.Fragment>
                 <Button type="primary" style={{ marginBottom: 15 }} onClick={() => this.setState({ addModalVisible: true })}>Tambah Produk</Button>
-                <Table columns={this.columns} dataSource={this.data} />
+                <Table columns={this.columns} dataSource={this.state.data} />
                 <AddModal visible={this.state.addModalVisible} closeModal={this._toogleAddModal} />
             </React.Fragment>
         )
     }
 }
 
-const mapStateToProps = (state) => ({
-
-})
-
-const mapDispatchToProps = {
+const newData = {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Product)
+const mapStateToProps = (state: any) => ({
+
+})
+
+const mapDispatchToProps = (dispatch: (x: any) => void) => ({
+    setBreadcrum: (payload: any) => dispatch({ type: 'SET_BREADCRUM', payload })
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductList)

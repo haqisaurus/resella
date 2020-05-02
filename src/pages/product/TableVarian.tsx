@@ -1,11 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Table, Button, Modal, Input, Form, InputNumber } from 'antd';
-import PriceModal from './PriceModal'
-export class TableVarian extends Component {
+import PriceModal from './PriceModal';
+interface IProps {
+
+}
+interface IStat {
+    modalVarianShow: boolean;
+    modalPriceShow: boolean;
+    data: any[]
+}
+export class TableVarian extends Component<IProps, IStat> {
     state = {
         modalVarianShow: true,
-        modalPriceShow: true
+        modalPriceShow: true,
+        data: []
     };
 
     columns = [
@@ -79,8 +88,8 @@ export class TableVarian extends Component {
                         <Form.Item name={['commonBuyPrice']} label="Harga Beli">
                             <InputNumber
                                 defaultValue={0}
-                                formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                                parser={value => value.replace(/[^0-9]/g, '')}
+                                formatter={(value: any) => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                                parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                 style={{ width: '100%' }}
                             />
                         </Form.Item>
@@ -88,8 +97,8 @@ export class TableVarian extends Component {
                             <Form.Item name={['commonBuyPrice']} rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
                                 <InputNumber
                                     defaultValue={0}
-                                    formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                                    parser={value => value.replace(/[^0-9]/g, '')}
+                                    formatter={(value: any) => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                                    parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                     style={{ width: '100%' }}
                                 />
                             </Form.Item>
@@ -101,8 +110,8 @@ export class TableVarian extends Component {
                             <Form.Item name={['commonBuyPrice']} rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
                                 <InputNumber
                                     defaultValue={0}
-                                    formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                                    parser={value => value.replace(/[^0-9]/g, '')}
+                                    formatter={(value: any) => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                                    parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                     style={{ width: '100%' }}
                                 />
                             </Form.Item>
@@ -117,7 +126,7 @@ export class TableVarian extends Component {
         );
     }
 
-    render() {
+    render () {
         return (
             <React.Fragment>
 
@@ -125,7 +134,7 @@ export class TableVarian extends Component {
                 <Button type="primary" style={{ marginBottom: 10 }} onClick={() => this.setState({ modalVarianShow: true })}>Tambah Varian</Button>
                 <Table
                     bordered
-                    dataSource={this.data}
+                    dataSource={this.state.data}
                     columns={this.columns}
                     rowClassName="editable-row"
                 />
@@ -134,7 +143,7 @@ export class TableVarian extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
 
 })
 

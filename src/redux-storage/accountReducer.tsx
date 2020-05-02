@@ -25,6 +25,11 @@ export function accountReducer (state: IAcccount = INITIAL_STATE, action: any): 
                 tokenStore: action.payload.token,
                 expiredAt: action.payload.expiredAt
             };
+        case 'REMOVE_TOKEN_STORE':
+            return {
+                ...state,
+                tokenStore: '',
+            };
         case 'SET_PROFILE': 
             return {
                 ...state,

@@ -1,35 +1,35 @@
 import { appConfig } from '../configs/configs';
 import { store } from '../redux-storage/configureStore';
 import { IResponse } from '../typed/Common';
-import { IBankType, IBank } from '../typed/Entity';
+import { ISupplier } from '../typed/Entity';
 
-export function getBankOptions (): Promise<IResponse> {
+export function getSupplier (): Promise<IResponse> {
     const state = store.getState();
-    return fetch(appConfig.accountServiceUrl + '/api/v1/bank-type', {
+    return fetch(appConfig.productServiceUrl + '/api/v1/supplier', {
         headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + state.account.tokenStore
         },
     }).then(async res => {
-        const data: IBankType[] = await res.json();
+        const data: ISupplier = await res.json();
         return { header: res, data };
     });
 }
-export function getBank (): Promise<IResponse> {
+export const getDetailSupplier = (supplierId: number) => {
     const state = store.getState();
-    return fetch(appConfig.accountServiceUrl + '/api/v1/bank', {
+    return fetch(appConfig.productServiceUrl + '/api/v1/supplier/' + supplierId, {
         headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + state.account.tokenStore
         },
     }).then(async res => {
-        const data: IBank[] = await res.json();
+        const data = await res.json();
         return { header: res, data };
     });
 }
-export function createBank (values: IBank): Promise<IResponse> {
+export function createSupplier (values: ISupplier): Promise<IResponse> {
     const state = store.getState();
-    return fetch(appConfig.accountServiceUrl + '/api/v1/bank', {
+    return fetch(appConfig.productServiceUrl + '/api/v1/supplier', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -37,13 +37,13 @@ export function createBank (values: IBank): Promise<IResponse> {
         },
         body: JSON.stringify(values)
     }).then(async res => {
-        const data: IBank = await res.json();
+        const data: ISupplier = await res.json();
         return { header: res, data };
     });
 }
-export function updateBank(values: IBank): Promise<IResponse> {
+export function updateSupplier (values: ISupplier): Promise<IResponse> {
     const state = store.getState();
-    return fetch(appConfig.accountServiceUrl + '/api/v1/bank/' + values.id, {
+    return fetch(appConfig.productServiceUrl + '/api/v1/supplier/' + values.id, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -51,20 +51,20 @@ export function updateBank(values: IBank): Promise<IResponse> {
         },
         body: JSON.stringify(values)
     }).then(async res => {
-        const data: IBank = await res.json();
+        const data: ISupplier = await res.json();
         return { header: res, data };
     });
 }
-export function deleteBank(values: IBank): Promise<IResponse> {
+export function deleteSupplier (values: ISupplier): Promise<IResponse> {
     const state = store.getState();
-    return fetch(appConfig.accountServiceUrl + '/api/v1/bank/' + values.id, {
+    return fetch(appConfig.productServiceUrl + '/api/v1/supplier/' + values.id, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + state.account.tokenStore
         },
     }).then(async res => {
-        const data: IBank = await res.json();
+        const data: ISupplier = await res.json();
         return { header: res, data };
     });
 }

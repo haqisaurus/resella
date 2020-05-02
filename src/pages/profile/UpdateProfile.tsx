@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Row, Col, Form, Input, Modal, Avatar, notification, Layout, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { updateProfile } from '../../service/AccountService';
-import { IUser } from '../../typed/Response';
+import { IUser } from '../../typed/Entity';
 interface IProps {
     profile: IUser;
     setBreadcrum: (x: any) => void;

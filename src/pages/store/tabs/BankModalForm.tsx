@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Form, Button, Input, Select, Checkbox, notification, Spin } from 'antd'
-import { IResStore, IResBankType, IResBank } from '../../../typed/Response';
 import { FormInstance } from 'antd/lib/form';
 import { getBankOptions, updateBank, createBank } from '../../../service/BankService';
+import { IStore, IBank, IBankType } from '../../../typed/Entity';
 
 interface IProps {
     modalShow: boolean;
     eventModal: () => void;
-    currentStore?: IResStore;
-    data: IResBank;
+    currentStore?: IStore;
+    data: IBank;
     form?: any;
 }
 interface IState {
-    bankOptions: IResBankType[];
-    bankData: IResBank;
+    bankOptions: IBankType[];
+    bankData: IBank;
     pageReady: boolean;
     isSubmitting: boolean;
 }
@@ -42,7 +42,7 @@ class BankModalForm extends Component<IProps, IState> {
         }
     }
     _onSubmit = async (values: any) => {
-        const data: IResBank = {...this.state.bankData, ...values};
+        const data: IBank = {...this.state.bankData, ...values};
         console.log(data)
         this.setState({isSubmitting: true});
         let result = null;
@@ -122,7 +122,7 @@ class BankModalForm extends Component<IProps, IState> {
                                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                             }
                         >
-                            {this.state.bankOptions.map((item: IResBankType, index: number) => (<Select.Option key={`${index}`} value={item.value} > {item.value} </Select.Option>))}
+                            {this.state.bankOptions.map((item: IBankType, index: number) => (<Select.Option key={`${index}`} value={item.value} > {item.value} </Select.Option>))}
                         </Select>
                     </Form.Item>
                     <Form.Item

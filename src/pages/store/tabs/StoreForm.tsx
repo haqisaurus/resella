@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { InputNumber, Form, Button, Input, Modal, notification } from 'antd'
-import { IResStore } from '../../../typed/Response';
+import { Form, Button, Input, Modal, notification } from 'antd'
 import { updateStore } from '../../../service/StoreService';
+import { IStore } from '../../../typed/Entity';
 interface IProps { 
-    currentStore: IResStore;
+    currentStore: IStore;
     setCurrentStore: (x: any) => void;
 }
 interface IState {
@@ -33,7 +33,7 @@ class StoreForm extends Component<IProps, IState> {
                 });
                 return;
             }
-            this.props.setCurrentStore(result);
+            this.props.setCurrentStore(result.data);
             notification.success({
                 message: `Notifikasi!`,
                 description:'Toko sukses diupdate.',

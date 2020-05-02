@@ -9,13 +9,15 @@ import {
     ArrowUpOutlined,
 } from '@ant-design/icons';
 import Home from '../home/Home';
-// import Product from '../product/Product';
-// import ListCategory from '../category/ListCategory'
+import ListProduct from '../product/ProductList';
+import ListCategory from '../category/CategoryList';
+import ListSupplier from '../supplier/SupplierList';
 import Error404 from '../errors/Error404';
 import UpdateStore from '../store/UpdateStore';
 import UpdateProfile from '../profile/UpdateProfile';
 import SideBar from './SideBar';
 import Header from './Header';
+import { getCategory } from '../../service/CategoryService';
 interface Iprops {
     setScrumbread: (x: any) => void;
     breadcrumbs: any[]
@@ -32,7 +34,12 @@ export class Dashboard extends Component<Iprops & RouteComponentProps, IState>  
         this.setState({ sideBarCollapsed: collapsed });
     };
 
+    async componentDidMount() {
+        await getCategory();
+    }
+
     render () {
+        
         return (
             <Fragment>
                 <Layout style={{ minHeight: '100vh' }}>
@@ -41,18 +48,21 @@ export class Dashboard extends Component<Iprops & RouteComponentProps, IState>  
                         <Header parentProps={this.props} />
                         <Layout.Content style={{ margin: '16px' }}>
                             <Breadcrumb style={{ margin: '16px 0' }}>
-                                {this.props.breadcrumbs.map((item: any, index: number) => (<Breadcrumb.Item key={'bc' + index} href={'#/'+item.link}>{index === 0 && <HomeFilled />} {item.label}</Breadcrumb.Item>))}
+                                {this.props.breadcrumbs.map((item: any, index: number) => (<Breadcrumb.Item key={'bc' + index} href={'#/'+item.link}>{index === 0 && <HomeFilled />} {' ' + item.label}</Breadcrumb.Item>))}
                             </Breadcrumb>
                             <Router>
                                 <Switch>
                                     <Route exact path={`/app`} component={Home} />
                                     <Route exact path={'/app/update-store'} component={UpdateStore} />
                                     <Route exact path={`/app/profile`} component={UpdateProfile} />
+                                    <Route exact path={`/app/product-supplier`} component={ListSupplier} />
+                                    <Route exact path={`/app/product-category`} component={ListCategory} />
+                                    <Route exact path={`/app/product`} component={ListProduct} />
                                     {/* 
                                     <Route exact path={`${this.props.match.path}/product`} component={Product} />
                                     <Route exact path={`${this.props.match.path}/product-category`} component={ListCategory} /> */}
 
-                                    <Route exact path={`${this.props.location.pathname}/*`} component={Error404} />
+                                    <Route exact path={`/app/*`} component={Error404} />
                                 </Switch>
                             </Router>
                         </Layout.Content>

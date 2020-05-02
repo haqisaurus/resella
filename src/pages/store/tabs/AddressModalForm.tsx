@@ -3,24 +3,23 @@ import { connect } from 'react-redux';
 import { Modal, Form, Button, Input, Select, Checkbox, Spin, notification } from 'antd'
 import { getProvice, getCities, getSubdistrict } from '../../../service/DeliveryService';
 import { IProvince, ISubdistrict, ICity } from '../../../typed/Common';
-import { IResAddress, IResStore } from '../../../typed/Response';
 import { FormInstance } from 'antd/lib/form';
-import { IReqAddress } from '../../../typed/Request';
 import { createAddress, updateAddress } from '../../../service/AddressService';
+import { IStore, IAddress } from '../../../typed/Entity';
 
 interface IProps {
     modalShow: boolean;
     eventModal: () => void;
-    currentStore?: IResStore;
-    data: IResAddress;
+    currentStore?: IStore;
+    data: IAddress;
     form?: any;
 }
 interface IState {
     provinces: IProvince[];
     cities: ICity[];
     subdistricts: ISubdistrict[];
-    addresses: IResAddress[];
-    addressData: IResAddress;
+    addresses: IAddress[];
+    addressData: IAddress;
     pageReady: boolean;
     isSubmitting: boolean;
 }
@@ -63,7 +62,7 @@ class AddressModalForm extends Component<IProps, IState> {
     }
     _onSubmit = async (values: any) => {
         console.log(values, this.state.addressData)
-        const data: IReqAddress = {...this.state.addressData, ...values};
+        const data: IAddress = {...this.state.addressData, ...values};
         data.province = this.state.addressData.province;
         data.province_id = this.state.addressData.province_id;
         data.city = this.state.addressData.city;

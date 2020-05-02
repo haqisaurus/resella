@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { InputNumber, Form, Button, Input, Modal, notification, Checkbox, Row, Col } from 'antd'
-import { IResStore, IResDelivery } from '../../../typed/Response';
 import { updateStore } from '../../../service/StoreService';
-import { IDelivery } from '../../../typed/Common';
 import { FormInstance } from 'antd/lib/form';
 import { getDeliveryServices } from '../../../service/DeliveryService';
+import { IStore, IDelivery } from '../../../typed/Entity';
 interface IProps {
-    currentStore: IResStore;
+    currentStore: IStore;
     setCurrentStore: (x: any) => void;
 }
 interface IState {
     deliveryServices: IDelivery[],
-    deliverySupport: boolean;
+    deliverySupport?: boolean;
 
 }
 class ShippingForm extends Component<IProps, IState> {
@@ -49,7 +48,7 @@ class ShippingForm extends Component<IProps, IState> {
                 });
                 return;
             }
-            this.props.setCurrentStore(result);
+            this.props.setCurrentStore(result.data);
             notification.success({
                 message: `Notifikasi!`,
                 description: 'Toko sukses diupdate.',
@@ -69,7 +68,7 @@ class ShippingForm extends Component<IProps, IState> {
                 name="basic"
                 initialValues={{
                     delivery_support: this.props.currentStore.delivery_support,
-                    deli_services: this.props.currentStore.deli_services?.map((item: IResDelivery) => item.id)
+                    deli_services: this.props.currentStore.deli_services?.map((item: IDelivery) => item.id)
                 }}
                 onFinish={this._onSubmit}
                 onFinishFailed={this._onFailed}

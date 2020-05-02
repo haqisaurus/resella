@@ -6,10 +6,11 @@ import { Link } from 'react-router-dom';
 import { appConfig } from '../../configs/configs';
 import { getProvice, getCities, getSubdistrict, getDeliveryServices } from '../../service/DeliveryService';
 import { postNewStore } from '../../service/StoreService';
-import { IResponse, ICreateStoreFormHelper, ISubdistrict, IProvince, ICity, IDelivery } from '../../typed/Common';
 import { FormInstance } from 'antd/lib/form';
+import { ICity, IProvince, ISubdistrict, ICreateStoreFormHelper, IResponse } from '../../typed/Common';
+import { IDelivery } from '../../typed/Entity';
 interface IProps {
-
+    removeTokenStore: () => void;
 };
 interface IState {
     loading: boolean;
@@ -57,6 +58,7 @@ export class AddStore extends Component<IProps, IState> {
 
     async componentDidMount () {
         try {
+            this.props.removeTokenStore();
             const deliveryServices = await getDeliveryServices()
             const provinces = await getProvice();
             console.log(deliveryServices)
@@ -274,6 +276,7 @@ export class AddStore extends Component<IProps, IState> {
                                             this.setState({ formHelper });
                                             try {
                                                 const subdistricts = await getSubdistrict(selectedId);
+                                                console.log(subdistricts)
                                                 this.setState({
                                                     subdistricts: subdistricts.data.rajaongkir.results
                                                 });
@@ -359,8 +362,8 @@ const mapStateToProps = (state: any) => ({
 
 })
 
-const mapDispatchToProps = {
-
-}
+const mapDispatchToProps = (dispatch: (x: any) => void) => ({
+    removeTokenStore: () => dispatch({type: 'REMOVE_TOKEN_STORE'})
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddStore)

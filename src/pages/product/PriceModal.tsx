@@ -2,7 +2,14 @@ import React, { Component } from 'react'
 import { Form, Modal, InputNumber, Button } from 'antd'
 import { connect } from 'react-redux'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-export class PriceModal extends Component {
+interface IProps {
+    isVisible: boolean;
+    closeModal: () => void;
+}
+interface IState {
+
+}
+export class PriceModal extends Component<IProps, IState> {
 
     render() {
         return (
@@ -20,16 +27,14 @@ export class PriceModal extends Component {
                                 return (
                                     <React.Fragment>
                                         {
-                                            fields.map((field, index) => (
+                                            fields.map((field: any, index: number) => (
                                                 <Form.Item style={{ margin: 0 }}>
                                                     <Form.Item
                                                         name={[field.name, 'jumlah']}
-                                                        key={[field.key, 'jumlah']}
-                                                        fieldKey={[field.key, 'jumlah']}
                                                         style={{ display: 'inline-block', width: '50%', paddingRight: 10, margin: 0 }}
                                                         rules={[{
                                                             required: true,
-                                                        }, (object) => ({
+                                                        }, (object: any) => ({
                                                             validator(rule, value) {
                                                                 console.log(object.getFieldValue(), object.getFieldValue('harga' + field.name))
                                                                 if (field.key === 0 || !value || object.getFieldValue(field.name + 'harga') === value) {
@@ -43,8 +48,6 @@ export class PriceModal extends Component {
                                                     
                                                     <Form.Item
                                                         name={[field.name, 'harga']}
-                                                        key={[field.key, 'harga']}
-                                                        fieldKey={[field.fieldKey, 'harga']}
                                                         style={{ display: 'inline-block', width: '50%' }}
                                                         rules={[
                                                             { 
@@ -101,7 +104,7 @@ export class PriceModal extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
 
 })
 
