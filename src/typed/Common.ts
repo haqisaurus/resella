@@ -1,3 +1,5 @@
+import { IProduct } from "./Entity";
+
 export interface IResLogin {
     expiredAt: number;
     token: string;
@@ -44,4 +46,8 @@ export interface IReqLoginStore {
 export interface IResLogin {
     expiredAt: number;
     token: string;
+}
+
+export interface IProductForm extends IProduct {
+    auto_gen_code? : true;
 }

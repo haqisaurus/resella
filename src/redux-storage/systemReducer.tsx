@@ -8,7 +8,7 @@ const INITIAL_STATE = {
 export function systemReducer (state = INITIAL_STATE, action: any): IStore {
     switch (action.type) {
         case 'SET_BREADCRUM':
-            console.log(action.payload)
+            // console.log(action.payload)
             return {
                 ...state,
                 breadcrumbs: action.payload

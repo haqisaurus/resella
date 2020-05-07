@@ -45,37 +45,41 @@ export interface IProduct {
     store?: IStore;
     tags?: ITag[];
     varians?: IVarian[];
+    global_prices?: IPrice[],
+    global_reseller_prices?: IPrice[],
 }
 
 export interface IVarian {
-    id: number;
+    id?: number;
     name: string;
     color: string;
     size: string;
-    product_id: number;
-    prices: IPrice[];
-    images: IImage[];
-    created_at: Date;
-    updated_at: Date;
+    stock: number;
+    product_id?: number;
+    prices?: IPrice[];
+    reseller_prices?: IPrice[];
+    images?: IImage[];
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export interface IImage {
-    id: number;
+    id?: number;
     filename: string;
     link: string;
-    varian_id: number;
-    created_at: Date;
-    updated_at: Date;
+    varian_id?: number;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export interface IPrice {
-    id: number;
+    id?: number;
     qty: number;
     price: number;
-    type: string;
-    price_for: string;
-    created_at: Date;
-    updated_at: Date;
+    type?: string;
+    price_for?: string;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 // account service typed

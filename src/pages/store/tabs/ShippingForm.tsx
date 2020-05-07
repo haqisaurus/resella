@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { InputNumber, Form, Button, Input, Modal, notification, Checkbox, Row, Col } from 'antd'
+import { Form, Button, Modal, notification, Checkbox, Row, Col } from 'antd'
 import { updateStore } from '../../../service/StoreService';
 import { FormInstance } from 'antd/lib/form';
 import { getDeliveryServices } from '../../../service/DeliveryService';

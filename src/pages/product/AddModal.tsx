@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Upload, Modal, Form, Input, InputNumber, Button, Row, Col, AutoComplete, Checkbox, Radio, Switch } from 'antd';
+import { Upload, Modal, Form, Input, InputNumber, Button, Row, Col, AutoComplete, Checkbox, Radio } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { appConfig } from '../../configs/configs';
 import TableVarian from './TableVarian';
+import PriceTable from './PriceTable';
+import { IProduct, ICategory } from '../../typed/Entity';
+import { FormInstance } from 'antd/lib/form';
+import { getCategory } from '../../service/CategoryService';
+import { IResponse, IProductForm } from '../../typed/Common';
 
 const layout = {
     labelCol: { span: 4 },
@@ -22,18 +27,52 @@ function getBase64 (file: File) {
 interface IProps {
     visible: boolean;
     closeModal: () => void;
+    formData?: IProductForm;
+    resultModal: (x: IProduct) => void;
 }
 interface IState {
-    previewVisible: boolean,
-    previewImage: string,
-    fileList: any,
+    previewVisible: boolean;
+    previewImage: string;
+    fileList: any;
+    formData?: IProductForm;
+    categories: ICategory[];
+    autoGenCode: boolean;
 }
 export class AddModal extends Component<IProps, IState> {
+    formRef = React.createRef<FormInstance>();
+    gPrice = React.createRef<any>();
+    gResPrice = React.createRef<any>();
+
     state = {
         previewVisible: false,
         previewImage: '',
         fileList: [],
+        formData: this.props.formData,
+        categories: [],
+        autoGenCode: this.props.formData?.auto_gen_code || true
     };
+
+    async componentDidMount () {
+        try {
+            const request: IResponse = await getCategory();
+            if (request.header.ok) {
+                this.setState({
+                    categories: request.data,
+                });
+            } else {
+                Modal.error({
+                    title: 'Error!',
+                    content: request.header.statusText,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            Modal.error({
+                title: 'Error!',
+                content: error.message,
+            });
+        }
+    }
 
     _handleCancel = () => this.setState({ previewVisible: false });
 
@@ -58,14 +97,9 @@ export class AddModal extends Component<IProps, IState> {
             <div className="ant-upload-text">Upload</div>
         </div>
     );
-    options = [
-        { value: 'Burns Bay Road' },
-        { value: 'Downing Street' },
-        { value: 'Wall Street' },
-    ];
 
     _handleOk = () => {
-
+        console.log(this.gPrice.current._getPrice())
     }
     _onSubmit = () => {
 
@@ -99,27 +133,37 @@ export class AddModal extends Component<IProps, IState> {
                             </Upload>
                         </Col>
                     </Row>
-                    <Form {...layout} name="nest-messages" onFinish={this._onSubmit}>
-                        <Form.Item name={['user', 'name']} label="Nama Produk" rules={[{ required: true }]}>
+                    <Form
+                        {...layout}
+                        ref={this.formRef}
+                        name="product"
+                        onFinish={this._onSubmit}
+                        initialValues={{
+                            ...this.state.formData,
+                            selected_category: this.state.formData?.category_id ? this.state.categories.find((item: ICategory) => item.id === this.state.formData?.category_id) : '',
+                            g_price: this.state.formData?.global_prices?.[0]?.price || 0,
+                            g_reseller_price: this.state.formData?.global_reseller_prices?.[0]?.price || 0
+                        }}
+                    >
+                        <Form.Item name="name" label="Nama Produk" rules={[{ required: true }]}>
                             <Input />
                         </Form.Item>
-                        <Form.Item name={['user', 'name']} label="Deskripsi" rules={[{ required: true }]}>
+                        <Form.Item name="desc" label="Deskripsi" rules={[{ required: true }]}>
                             <Input.TextArea />
                         </Form.Item>
                         <Form.Item label="Kategori" {...{ labelCol: { span: 4 }, wrapperCol: { span: 20 } }}>
-                            <Form.Item name={['category']} rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
+                            <Form.Item name="selected_category" rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
                                 <AutoComplete
                                     dropdownClassName="certain-category-search-dropdown"
                                     dropdownMatchSelectWidth={500}
                                     style={{ width: '100%' }}
-                                    options={this.options}
-                                    filterOption={(inputValue: any, option: any) => {
-                                        console.log(inputValue, option)
-                                        return option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                                    }
-                                    }
+                                    onChange={(value: string) => {
+                                        const cat: any = this.state.categories.find((item: ICategory) => item?.id?.toString() === value);
+                                        this.formRef.current?.setFieldsValue({ category_id: cat.id });
+                                        this.formRef.current?.setFieldsValue({ selected_category: cat.name });
+                                    }}
                                 >
-                                    <Input.Search placeholder="Cari kategori" />
+                                    {this.state.categories.map((item: ICategory) => (<AutoComplete.Option key={item.id} value={item.id!}>{item.name}</AutoComplete.Option>))}
                                 </AutoComplete>
                             </Form.Item>
                             <Form.Item style={{ display: 'inline-block', width: 'calc(40% - 8px)', marginLeft: 15, marginBottom: 0 }}>
@@ -129,25 +173,31 @@ export class AddModal extends Component<IProps, IState> {
                             </Form.Item>
                         </Form.Item>
                         <Form.Item label="SKU" >
-                            <Form.Item name={['user', 'name']} rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
-                                <Input />
+                            <Form.Item name="sku" rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
+                                <Input disabled={this.state.autoGenCode} />
                             </Form.Item>
-                            <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginLeft: 15, marginBottom: 0 }}>
-                                <Checkbox>Buat Otomatis</Checkbox>
+                            <Form.Item name="auto_gen_code" style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginLeft: 15, marginBottom: 0 }}>
+                                <Checkbox
+                                    checked={this.state.autoGenCode}
+                                    onChange={(e: any) => {
+                                        this.formRef.current?.setFieldsValue({ auto_gen_code: e.target.checked });
+                                        this.setState({ autoGenCode: e.target.checked });
+                                    }}
+                                >Buat Otomatis</Checkbox>
                             </Form.Item>
                         </Form.Item>
-                        <Form.Item name={['commonBuyPrice']} label="Harga Beli Utama">
+                        <Form.Item name="buy_price" label="Harga Beli Utama">
                             <InputNumber
-                                defaultValue={0}
+                                defaultValue={this.state.formData?.buy_price}
                                 formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
                                 parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                 style={{ width: '100%' }}
                             />
                         </Form.Item>
                         <Form.Item label="Harga Jual Utama">
-                            <Form.Item name={['commonBuyPrice']} rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
+                            {/* <Form.Item name="g_price" rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
                                 <InputNumber
-                                    defaultValue={0}
+                                    defaultValue={this.state.formData?.global_prices?.[0]?.price || 0}
                                     formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
                                     parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                     style={{ width: '100%' }}
@@ -155,12 +205,13 @@ export class AddModal extends Component<IProps, IState> {
                             </Form.Item>
                             <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginLeft: 15, marginBottom: 0 }}>
                                 <Button>Buat Aturan Harga</Button>
-                            </Form.Item>
+                            </Form.Item> */}
+                            <PriceTable ref={this.gPrice} data={this.state.formData?.global_prices!} />
                         </Form.Item>
-                        <Form.Item name={['commonPrice']} label="Harga Reseller Utama" rules={[{ required: true }]}>
-                            <Form.Item name={['commonBuyPrice']} rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
+                        <Form.Item label="Harga Reseller Utama" rules={[{ required: true }]}>
+                            {/* <Form.Item name="g_reseller_price" rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginBottom: 0 }}>
                                 <InputNumber
-                                    defaultValue={0}
+                                    defaultValue={this.state.formData?.global_reseller_prices?.[0]?.price || 0}
                                     formatter={value => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
                                     parser={(value: any) => value.replace(/[^0-9]/g, '')}
                                     style={{ width: '100%' }}
@@ -168,48 +219,51 @@ export class AddModal extends Component<IProps, IState> {
                             </Form.Item>
                             <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginLeft: 15, marginBottom: 0 }}>
                                 <Button>Buat Aturan Harga</Button>
-                            </Form.Item>
+                            </Form.Item> */}
+                            <PriceTable key="re" ref={this.gResPrice} data={this.state.formData?.global_reseller_prices!} />
                         </Form.Item>
                         <Form.Item label="Varian" {...{ labelCol: { span: 4 }, wrapperCol: { span: 20 } }}>
                             <TableVarian />
                         </Form.Item>
-                        <Form.Item name={['isNew']} label="Kondisi" rules={[{ required: true }]}>
-                            <Radio.Group onChange={this._onChangeRadio} value={1}>
-                                <Radio value={1}>Baru</Radio>
-                                <Radio value={2}>Bekas</Radio>
+                        <Form.Item name="is_secondhand" label="Kondisi" rules={[{ required: true }]}>
+                            <Radio.Group onChange={this._onChangeRadio}>
+                                <Radio value={false}>Baru</Radio>
+                                <Radio value={true}>Bekas</Radio>
                             </Radio.Group>
                         </Form.Item>
-                        <Form.Item name={['user', 'name']} label="Min pemesanan" rules={[{ required: true }]}>
+                        <Form.Item name="min_order" label="Min pemesanan" rules={[{ required: true }]}>
                             <InputNumber
-                                defaultValue={0}
-                                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                                defaultValue={this.state.formData?.min_order}
+                                formatter={(value: any) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
                                 parser={(value: any) => parseInt(value.replace(/[^0-9]/g, ''))}
                                 style={{ width: 100 }}
                             /> pcs
                         </Form.Item>
-                        <Form.Item name={['user', 'name']} label="Berat" rules={[{ required: true }]}>
+                        <Form.Item name="weight" label="Berat" rules={[{ required: true }]}>
                             <InputNumber
-                                defaultValue={0}
+                                defaultValue={this.state.formData?.weight}
                                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
                                 parser={(value: any) => parseInt(value.replace(/[^0-9]/g, ''))}
                                 style={{ width: 100 }}
                             /> gram
                         </Form.Item>
-                        <Form.Item name={['isPreorder']} label="Preorder" rules={[{ required: true }]}>
-                            <Switch defaultChecked onChange={() => { }} />
+                        <Form.Item name="is_preorder" label="Preorder" rules={[{ required: true }]}>
+                            <Radio.Group onChange={this._onChangeRadio}>
+                                <Radio value={true}>Ya</Radio>
+                                <Radio value={false}>Tidak</Radio>
+                            </Radio.Group>
                         </Form.Item>
-
                     </Form>
-                    <Modal visible={this.state.previewVisible} footer={null} onCancel={this._handleCancel}>
+                    {this.state.previewVisible && <Modal visible={this.state.previewVisible} footer={null} onCancel={this._handleCancel}>
                         <img alt="example" style={{ width: '100%' }} src={this.state.previewImage} />
-                    </Modal>
+                    </Modal>}
                 </Modal>
             </React.Fragment>
         )
     }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = () => ({
 
 })
 
