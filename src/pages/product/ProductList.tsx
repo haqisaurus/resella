@@ -87,7 +87,7 @@ class ProductList extends Component<IProps, IState> {
             render: () => (
                 <span>
                     <Button type="dashed" size="small">Edit</Button>&nbsp;
-                    <Button type="danger" size="small">Delete</Button>
+                    <Button type="link" size="small">Delete</Button>
                 </span>
             ),
         },

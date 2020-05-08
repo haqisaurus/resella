@@ -69,7 +69,7 @@ class BankList extends Component<IProps, IState> {
                 render: (text: string, record: IBank) => (
                     <React.Fragment>
                         <Button size="small" type="dashed" onClick={() => this._editData(record)}>Edit</Button>&nbsp;
-                        <Button size="small" type="danger" onClick={() => this._delete(record)}>Hapus</Button>
+                        <Button size="small" type="link" onClick={() => this._delete(record)}>Hapus</Button>
                     </React.Fragment>
                 ),
             },
